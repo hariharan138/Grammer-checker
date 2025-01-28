@@ -59,7 +59,7 @@ const AIAssistant: React.FC<AIAssistantProps> = ({ messages, addMessage }) => {
     setInput("")
 
     try {
-      const apiKey = process.env.NEXT_PUBLIC_GEMINI_API_KEY
+      const apiKey = "AIzaSyAo0XS96F_F0DHgQoCtWKpY2dwbW-YQQJg"
       if (!apiKey) {
         throw new Error("API key is not set")
       }
