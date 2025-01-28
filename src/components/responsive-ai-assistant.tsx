@@ -78,90 +78,88 @@ const ResponsiveAiAssistant = () => {
   };
 
   return (
-    <Card className="w-full max-w-lg mx-auto h-[calc(100vh-2rem)] flex flex-col sm:max-w-2xl">
-      <CardHeader className="py-3 sm:py-6">
-        <CardTitle className="text-lg sm:text-xl font-bold text-center">Grammer Checker</CardTitle>
-      </CardHeader>
-      <CardContent className="flex-grow overflow-hidden p-2 sm:p-6">
-        <ScrollArea className="h-full pr-2 sm:pr-4" ref={scrollAreaRef}>
-          <AnimatePresence>
-            {messages.map((message) => (
-              <motion.div
-                key={message.id}
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: -20 }}
-                transition={{ duration: 0.3 }}
-                className={`mb-2 sm:mb-4 ${message.isUser ? "text-right" : "text-left"}`}
-              >
-                <div
-                  className={`inline-block p-2 sm:p-3 rounded-lg text-sm sm:text-base ${
-                    message.isUser ? "bg-primary text-primary-foreground" : "bg-muted"
-                  }`}
-                >
-                  {message.text}
-                </div>
-              </motion.div>
-            ))}
-          </AnimatePresence>
-          {loading && (
-            <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              className="flex justify-center items-center py-2"
+    <Card className="w-full max-w-screen-sm mx-auto h-[calc(100vh-2rem)] flex flex-col sm:max-w-2xl">
+  <CardHeader className="py-3 sm:py-6">
+    <CardTitle className="text-lg sm:text-xl font-bold text-center">Grammar Checker</CardTitle>
+  </CardHeader>
+  <CardContent className="flex-grow overflow-hidden px-3 sm:px-6">
+    <ScrollArea className="h-full pr-3 sm:pr-6" ref={scrollAreaRef}>
+      <AnimatePresence>
+        {messages.map((message) => (
+          <motion.div
+            key={message.id}
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -20 }}
+            transition={{ duration: 0.3 }}
+            className={`mb-2 sm:mb-4 ${message.isUser ? "text-right" : "text-left"}`}
+          >
+            <div
+              className={`inline-block p-3 rounded-lg text-sm sm:text-base ${
+                message.isUser ? "bg-primary text-primary-foreground" : "bg-muted"
+              }`}
             >
-              <Loader2 className="h-5 w-5 sm:h-6 sm:w-6 animate-spin" />
-            </motion.div>
-          )}
-        </ScrollArea>
-        {error && (
-          <Alert variant="destructive" className="mt-2 sm:mt-4">
-            <AlertDescription>{error}</AlertDescription>
-          </Alert>
-        )}
-      </CardContent>
-      <CardFooter className="p-2 sm:p-6">
-  <form onSubmit={handleSubmit} className="flex items-center w-full space-x-2">
-    {/* Input Field */}
-    <Input
-      type="text"
-      ref={inputRef}
-      value={input}
-      onChange={handleInputChange}
-      placeholder="Type your message..."
-      className="flex-grow text-sm sm:text-base"
-      disabled={loading}
-    />
+              {message.text}
+            </div>
+          </motion.div>
+        ))}
+      </AnimatePresence>
+      {loading && (
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          className="flex justify-center items-center py-2"
+        >
+          <Loader2 className="h-5 w-5 sm:h-6 sm:w-6 animate-spin" />
+        </motion.div>
+      )}
+    </ScrollArea>
+    {error && (
+      <Alert variant="destructive" className="mt-3 sm:mt-4">
+        <AlertDescription>{error}</AlertDescription>
+      </Alert>
+    )}
+  </CardContent>
+  <CardFooter className="px-3 sm:px-6 py-2 sm:py-6">
+    <form onSubmit={handleSubmit} className="flex items-center w-full space-x-2 sm:space-x-3">
+      {/* Input Field */}
+      <Input
+        type="text"
+        ref={inputRef}
+        value={input}
+        onChange={handleInputChange}
+        placeholder="Type your message..."
+        className="flex-grow text-sm sm:text-base"
+        disabled={loading}
+      />
 
-    {/* Clear Button */}
-    <Button
-      type="button"
-      variant="outline"
-      onClick={clearConversation}
-      disabled={loading || messages.length === 0}
-      size="icon"
-      className="h-10 w-10"
-    >
-      <Trash2 className="h-4 w-4 sm:h-5 sm:w-5" />
-      <span className="sr-only">Clear conversation</span>
-    </Button>
+      {/* Clear Button */}
+      <Button
+        type="button"
+        variant="outline"
+        onClick={clearConversation}
+        disabled={loading || messages.length === 0}
+        size="icon"
+        className="h-10 w-10 sm:h-12 sm:w-12"
+      >
+        <Trash2 className="h-4 w-4 sm:h-5 sm:w-5" />
+        <span className="sr-only">Clear conversation</span>
+      </Button>
 
-    {/* Send Button */}
-    <div className="flex justify-end">
+      {/* Send Button */}
       <Button
         type="submit"
         disabled={loading}
         size="icon"
-        className="h-10 w-10"
+        className="h-10 w-10 sm:h-12 sm:w-12"
       >
         <Send className="h-4 w-4 sm:h-5 sm:w-5" />
         <span className="sr-only">Send</span>
       </Button>
-    </div>
-  </form>
-</CardFooter>
+    </form>
+  </CardFooter>
+</Card>
 
-    </Card>
   );
 };
 
