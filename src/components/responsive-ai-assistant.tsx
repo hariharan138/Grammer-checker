@@ -1,89 +1,89 @@
-"use client"
+"use client";
 
-import type React from "react"
-import { useState, useRef, useEffect } from "react"
-import axios from "axios"
-import { Send, Loader2, Trash2 } from "lucide-react"
-import { Input } from "@/components/ui/input"
-import { Button } from "@/components/ui/button"
-import { Card, CardHeader, CardTitle, CardContent, CardFooter } from "@/components/ui/card"
-import { Alert, AlertDescription } from "@/components/ui/alert"
-import { ScrollArea } from "@/components/ui/scroll-area"
-import { motion, AnimatePresence } from "framer-motion"
+import type React from "react";
+import { useState, useRef, useEffect } from "react";
+import axios from "axios";
+import { Send, Loader2, Trash2 } from "lucide-react";
+import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
+import { Card, CardHeader, CardTitle, CardContent, CardFooter } from "@/components/ui/card";
+import { Alert, AlertDescription } from "@/components/ui/alert";
+import { ScrollArea } from "@/components/ui/scroll-area";
+import { motion, AnimatePresence } from "framer-motion";
 
 interface Message {
-  id: number
-  text: string
-  isUser: boolean
+  id: number;
+  text: string;
+  isUser: boolean;
 }
 
 const ResponsiveAiAssistant = () => {
-  const [input, setInput] = useState("")
-  const [messages, setMessages] = useState<Message[]>([])
-  const [loading, setLoading] = useState(false)
-  const [error, setError] = useState("")
-  const inputRef = useRef<HTMLInputElement>(null)
-  const scrollAreaRef = useRef<HTMLDivElement>(null)
+  const [input, setInput] = useState("");
+  const [messages, setMessages] = useState<Message[]>([]);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
+  const inputRef = useRef<HTMLInputElement>(null);
+  const scrollAreaRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    inputRef.current?.focus()
-  }, [])
+    inputRef.current?.focus();
+  }, []);
 
   useEffect(() => {
     if (scrollAreaRef.current) {
-      scrollAreaRef.current.scrollTop = scrollAreaRef.current.scrollHeight
+      scrollAreaRef.current.scrollTop = scrollAreaRef.current.scrollHeight;
     }
-  }, [scrollAreaRef]) //Corrected dependency
+  }, [messages]);
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setInput(e.target.value)
-    setError("")
-  }
+    setInput(e.target.value);
+    setError("");
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault()
+    e.preventDefault();
     if (!input.trim()) {
-      setError("Please enter a prompt")
-      return
+      setError("Please enter a prompt");
+      return;
     }
-    setLoading(true)
-    setError("")
+    setLoading(true);
+    setError("");
 
-    const userMessage: Message = { id: Date.now(), text: input, isUser: true }
-    setMessages((prev) => [...prev, userMessage])
-    setInput("")
+    const userMessage: Message = { id: Date.now(), text: input, isUser: true };
+    setMessages((prev) => [...prev, userMessage]);
+    setInput("");
 
     try {
-      const apiKey = "AIzaSyAo0XS96F_F0DHgQoCtWKpY2dwbW-YQQJg"
+      const apiKey = "AIzaSyAo0XS96F_F0DHgQoCtWKpY2dwbW-YQQJg";
       const response = await axios.post(
         `https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:generateContent?key=${apiKey}`,
         {
           contents: [{ parts: [{ text: `"${input}" - give proper english sentence` }] }],
-        },
-      )
-      const aiResponse = response.data.candidates[0].content.parts[0].text
-      const aiMessage: Message = { id: Date.now(), text: aiResponse, isUser: false }
-      setMessages((prev) => [...prev, aiMessage])
+        }
+      );
+      const aiResponse = response.data.candidates[0].content.parts[0].text;
+      const aiMessage: Message = { id: Date.now(), text: aiResponse, isUser: false };
+      setMessages((prev) => [...prev, aiMessage]);
     } catch (error) {
-      console.error("Error fetching data:", error)
-      setError("An error occurred while fetching the response. Please try again.")
+      console.error("Error fetching data:", error);
+      setError("An error occurred while fetching the response. Please try again.");
     } finally {
-      setLoading(false)
+      setLoading(false);
     }
-  }
+  };
 
   const clearConversation = () => {
-    setMessages([])
-    setError("")
-  }
+    setMessages([]);
+    setError("");
+  };
 
   return (
-    <Card className="w-full max-w-2xl mx-auto h-[calc(100vh-2rem)] flex flex-col">
+    <Card className="w-full max-w-lg mx-auto h-[calc(100vh-2rem)] flex flex-col sm:max-w-2xl">
       <CardHeader className="py-3 sm:py-6">
-        <CardTitle className="text-xl sm:text-2xl font-bold text-center">AI Language Assistant</CardTitle>
+        <CardTitle className="text-lg sm:text-xl font-bold text-center">Grammer Checker</CardTitle>
       </CardHeader>
       <CardContent className="flex-grow overflow-hidden p-2 sm:p-6">
-        <ScrollArea className="h-full pr-4" ref={scrollAreaRef}>
+        <ScrollArea className="h-full pr-2 sm:pr-4" ref={scrollAreaRef}>
           <AnimatePresence>
             {messages.map((message) => (
               <motion.div
@@ -92,7 +92,7 @@ const ResponsiveAiAssistant = () => {
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0, y: -20 }}
                 transition={{ duration: 0.3 }}
-                className={`mb-3 sm:mb-4 ${message.isUser ? "text-right" : "text-left"}`}
+                className={`mb-2 sm:mb-4 ${message.isUser ? "text-right" : "text-left"}`}
               >
                 <div
                   className={`inline-block p-2 sm:p-3 rounded-lg text-sm sm:text-base ${
@@ -121,36 +121,48 @@ const ResponsiveAiAssistant = () => {
         )}
       </CardContent>
       <CardFooter className="p-2 sm:p-6">
-        <form onSubmit={handleSubmit} className="flex space-x-2 w-full">
-          <Input
-            type="text"
-            ref={inputRef}
-            value={input}
-            onChange={handleInputChange}
-            placeholder="Type your message..."
-            className="flex-grow text-sm sm:text-base"
-            disabled={loading}
-          />
-          <Button type="submit" disabled={loading} size="icon" className="h-10 w-10">
-            <Send className="h-4 w-4 sm:h-5 sm:w-5" />
-            <span className="sr-only">Send</span>
-          </Button>
-          <Button
-            type="button"
-            variant="outline"
-            onClick={clearConversation}
-            disabled={loading || messages.length === 0}
-            size="icon"
-            className="h-10 w-10"
-          >
-            <Trash2 className="h-4 w-4 sm:h-5 sm:w-5" />
-            <span className="sr-only">Clear conversation</span>
-          </Button>
-        </form>
-      </CardFooter>
+  <form onSubmit={handleSubmit} className="flex items-center w-full space-x-2">
+    {/* Input Field */}
+    <Input
+      type="text"
+      ref={inputRef}
+      value={input}
+      onChange={handleInputChange}
+      placeholder="Type your message..."
+      className="flex-grow text-sm sm:text-base"
+      disabled={loading}
+    />
+
+    {/* Clear Button */}
+    <Button
+      type="button"
+      variant="outline"
+      onClick={clearConversation}
+      disabled={loading || messages.length === 0}
+      size="icon"
+      className="h-10 w-10"
+    >
+      <Trash2 className="h-4 w-4 sm:h-5 sm:w-5" />
+      <span className="sr-only">Clear conversation</span>
+    </Button>
+
+    {/* Send Button */}
+    <div className="flex justify-end">
+      <Button
+        type="submit"
+        disabled={loading}
+        size="icon"
+        className="h-10 w-10"
+      >
+        <Send className="h-4 w-4 sm:h-5 sm:w-5" />
+        <span className="sr-only">Send</span>
+      </Button>
+    </div>
+  </form>
+</CardFooter>
+
     </Card>
-  )
-}
+  );
+};
 
-export default ResponsiveAiAssistant
-
+export default ResponsiveAiAssistant;
