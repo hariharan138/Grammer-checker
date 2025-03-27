@@ -38,7 +38,7 @@ const AIAssistant: React.FC<AIAssistantProps> = ({ messages, addMessage }) => {
     if (scrollAreaRef.current) {
       scrollAreaRef.current.scrollTop = scrollAreaRef.current.scrollHeight
     }
-  }, [scrollAreaRef]) //Corrected dependency
+  }, [messages])
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setInput(e.target.value)
@@ -51,29 +51,53 @@ const AIAssistant: React.FC<AIAssistantProps> = ({ messages, addMessage }) => {
       setError("Please enter a prompt")
       return
     }
+
     setLoading(true)
     setError("")
 
-    const userMessage: Message = { id: Date.now(), text: input, isUser: true, timestamp: Date.now() }
+    const userMessage: Message = {
+      id: Date.now(),
+      text: input,
+      isUser: true,
+      timestamp: Date.now(),
+    }
     addMessage(userMessage)
     setInput("")
 
     try {
-      const apiKey = "AIzaSyDzsn0QYbyGiDURMNzgL7gJbzAAEX3ZhD0"
-      if (!apiKey) {
-        throw new Error("API key is not set")
-      }
+      const apiKey = "AIzaSyCKNh63jzai7kjp9Z7MrSmDblhN2uVwlrI" // Replace this with your actual API key
+
       const response = await axios.post(
-        `https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:generateContent?key=${apiKey}`,
+        // NEW (v1beta + gemini-2.0-flash)
+`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`,
         {
-          contents: [{ parts: [{ text: `"${input}" - give proper english sentence` }] }],
+          contents: [
+            {
+              parts: [{ text: `${input} - give proper English sentence` }],
+            },
+          ],
         },
+        {
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
       )
-      const aiResponse = response.data.candidates[0].content.parts[0].text
-      const aiMessage: Message = { id: Date.now(), text: aiResponse, isUser: false, timestamp: Date.now() }
+
+      const aiResponse = response.data.candidates?.[0]?.content?.parts?.[0]?.text || "No response from AI"
+      const aiMessage: Message = {
+        id: Date.now(),
+        text: aiResponse,
+        isUser: false,
+        timestamp: Date.now(),
+      }
       addMessage(aiMessage)
-    } catch (error) {
+    } catch (error: any) {
       console.error("Error fetching data:", error)
+      if (axios.isAxiosError(error)) {
+        console.error("Response status:", error.response?.status)
+        console.error("Response data:", error.response?.data)
+      }
       setError("An error occurred while fetching the response. Please try again.")
     } finally {
       setLoading(false)
@@ -89,7 +113,7 @@ const AIAssistant: React.FC<AIAssistantProps> = ({ messages, addMessage }) => {
       (err) => {
         console.error("Failed to copy text: ", err)
         setError("Failed to copy")
-      },
+      }
     )
   }
 
@@ -166,7 +190,7 @@ const AIAssistant: React.FC<AIAssistantProps> = ({ messages, addMessage }) => {
             ref={inputRef}
             value={input}
             onChange={handleInputChange}
-            placeholder="Type your message..."
+            placeholder="Type your sentence..."
             className="flex-grow text-sm sm:text-base"
             disabled={loading}
           />
@@ -181,4 +205,3 @@ const AIAssistant: React.FC<AIAssistantProps> = ({ messages, addMessage }) => {
 }
 
 export default AIAssistant
-
