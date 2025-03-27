@@ -68,12 +68,11 @@ const AIAssistant: React.FC<AIAssistantProps> = ({ messages, addMessage }) => {
       const apiKey = "AIzaSyCKNh63jzai7kjp9Z7MrSmDblhN2uVwlrI" // Replace this with your actual API key
 
       const response = await axios.post(
-        // NEW (v1beta + gemini-2.0-flash)
 `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`,
         {
           contents: [
             {
-              parts: [{ text: `Correct this to proper English: "${input}" and return only the corrected sentence.` }],
+              parts: [{ parts: [{ text: `"${input}" - give proper english sentence` }] }],
             },
           ],
         },
