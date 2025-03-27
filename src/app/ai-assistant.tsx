@@ -73,7 +73,7 @@ const AIAssistant: React.FC<AIAssistantProps> = ({ messages, addMessage }) => {
         {
           contents: [
             {
-              parts: [{ text: `${input} - give proper English sentence` }],
+              parts: [{ text: `Correct this to proper English: "${input}" and return only the corrected sentence.` }],
             },
           ],
         },
