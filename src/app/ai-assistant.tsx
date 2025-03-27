@@ -92,14 +92,15 @@ const AIAssistant: React.FC<AIAssistantProps> = ({ messages, addMessage }) => {
         timestamp: Date.now(),
       }
       addMessage(aiMessage)
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error("Error fetching data:", error)
       if (axios.isAxiosError(error)) {
         console.error("Response status:", error.response?.status)
         console.error("Response data:", error.response?.data)
       }
       setError("An error occurred while fetching the response. Please try again.")
-    } finally {
+    }
+     finally {
       setLoading(false)
     }
   }
