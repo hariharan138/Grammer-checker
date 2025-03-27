@@ -59,7 +59,7 @@ const AIAssistant: React.FC<AIAssistantProps> = ({ messages, addMessage }) => {
     setInput("")
 
     try {
-      const apiKey = "AIzaSyAo0XS96F_F0DHgQoCtWKpY2dwbW-YQQJg"
+      const apiKey = "AIzaSyDzsn0QYbyGiDURMNzgL7gJbzAAEX3ZhD0"
       if (!apiKey) {
         throw new Error("API key is not set")
       }
